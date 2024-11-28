@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Finance Tracker</title>
+    <style>
+      body {
+        margin: 40px;
+        font-family: Arial, sans-serif;
+        background-color: #1a1a1a;
+        text-align: center;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2.5em;
+        color: #ffffff;
+      }
+      .container {
+        display: flex;
+        justify-content: space-between;
+        gap: 25px;
+      }
+      .container .both1 {
+        width: 80%;
+      }
+      .chart {
+        /* margin-right: 70px; */
+        text-align: center;
+      }
+      canvas {
+        min-height: 50%;
+        min-width: 50%;
+      }
+
+      .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 40px;
+        width: 60%;
+        background-color: #ddd;
+        border: 2px solid #706f6f;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+      }
+      .input-container label {
+        font-size: 20px;
+        font-size: bolder;
+        width: 25%;
+        text-align: left;
+      }
+      .input-container:hover {
+        box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.2);
+      }
+      .input-container > div {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .input-container input,
+      select,
+      button {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        text-align: center;
+        width: 50%;
+      }
+
+      .input-container input:focus,
+      select:focus,
+      button:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+      }
+
+      .input-container button {
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        /* width: 25%; */
+        margin-top: 20px;
+      }
+
+      .input-container button:hover {
+        background-color: #218838;
+      }
+
+      .all3 {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px;
+        background-color: #ddd;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .inp_spacing{
+        display: flex;
+        justify-content: space-between;
+        & input,
+        #category,#date{
+          width: 300px;
+        }
+
+      }
+
+      .table-container {
+        margin: 20px 0;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+
+      th,
+      td {
+        border: 2px solid black;
+        padding: 15px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #333;
+        color: white;
+        font-size: 1.2em;
+      }
+
+      td button {
+        padding: 8px 12px;
+        background-color: red;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+        width: 50%;
+      }
+
+      td button:hover {
+        background-color: darkred;
+      }
+      #amount {
+        margin-left: 62px;
+      }
+      #date {
+        margin-left: 83px;
+      }
+      .income,
+      .total,
+      .balance {
+        margin-top: 20px;
+        font-size: 1.5em;
+      }
+
+      .balance-status {
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      .under-budget {
+        color: green;
+      }
+
+      .overspent {
+        color: red;
+      }
+
+      .chart {
+        width: 40%;
+      }
+      .both1 {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .chart {
+        width: 100%;
+        height: auto;
+      }
+      canvas {
+        max-width: 100%;
+        height: auto;
+      }
+      input[type="date"] {
+        width: 54%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin-left: 65px !important;
+      }
+      .btn {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center;
+        text-align: center;
+        margin: 20px;
+      }
+      @media (min-width: 1200px) {
+        .input-container {
+          width: 90%;
+        }
+      }
+      @media (max-width: 1200px) {
+        .input-container {
+          width: 90%;
+        }
+        .container {
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+        .input-container > div {
+          padding: 10px 20px;
+        }
+
+        td button {
+          width: 100%;
+          padding: 10px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .input-container {
+          width: 80%;
+          padding: 30px;
+        }
+        .container {
+          flex-direction: column;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        .all3 {
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+          padding: 30px 10px;
+        }
+        th,
+        td {
+          padding: 15px;
+        }
+        td button {
+          width: 100%;
+          padding: 10px;
+        }
+      }
+      @media (max-width: 600px) {
+        .input-container {
+          padding: 20px;
+        }
+
+        input[type="date"] {
+          width: 100%;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+      @media (max-width: 480px) {
+        body {
+          margin: 20px;
+        }
+        .container {
+          flex-direction: column;
+        }
+        .input-container {
+          width: 100%;
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 1.8em;
+        }
+
+        th,
+        td {
+          padding: 10px;
+          font-size: 0.9em;
+        }
+
+        .all3 {
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+          padding: 20px 5px;
+        }
+        td button {
+          width: 100%;
+          padding: 8px;
+        }
+      }
+      @media (min-width: 600px) {
+        .chart {
+          margin-top: 80px;
+          width: 100%;
+          height: 500px;
+        }
+        canvas {
+          max-width: 100%;
+          height: auto; /* Maintain aspect ratio */
+        }
+      }
+      @media (min-width: 788px) {
+        #expense-name {
+          margin-left: 59px;
+        }
+        #category {
+          margin-left: 67px;
+        }
+        #date {
+          margin-left: 63px;
+        }
+      }
+      @media (min-width: 400px) {
+        #expense-name {
+          margin-left: 59px;
+        }
+        #category {
+          margin-left: 67px;
+        }
+        #date {
+          margin-left: 83px;
+        }
+      }
+      @media (max-width: 788px) {
+        #expense-name {
+          margin-left: 59px;
+        }
+        #category {
+          margin-left: 67px;
+        }
+      }
+      @media (width: 619px) {
+        #date {
+          width: 70%;
+        }
+      }
+      @media (min-width: 480px) {
+        #expense-name {
+          margin-left: 59px;
+        }
+        #category {
+          margin-left: 67px;
+        }
+        #date {
+          margin-left: 43px;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>Expense Finance Tracker..</h1>
+    <div class="container">
+      <div class="both1">
+        <div class="input-container new">
+          <h2>
+            <i><u>Set Your Monthly Income</u></i>
+          </h2>
+          <div class="inp_spacing">
+            <label for="monthly-income">Monthly Income:</label>
+            <input
+              type="number"
+              min="0"
+              id="monthly-income"
+              placeholder="Monthly Income"
+              required
+            />
+          </div>
+        </div>
+        <div class="input-container">
+          <h2>
+            <i><u>Add an Expense</u></i>
+          </h2>
+          <div class="inp_spacing">
+            <label for="expense-name">Expense Name:</label>
+            <input
+              type="text"
+              id="expense-name"
+              placeholder="Expense Name"
+              required
+            />
+          </div>
+          <div class="inp_spacing">
+            <label for="amount">Amount:</label>
+            <input
+              type="number"
+              min="1"
+              id="amount"
+              placeholder="Amount"
+              required
+            />
+          </div>
+          <div class="inp_spacing">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required />
+          </div>
+          <div class="inp_spacing">
+            <label for="category">Category:</label>
+
+            <select name="category" id="category">
+              <option value="select category" disabled selected>
+                Select Category
+              </option>
+              <option value="entertainment">🎉 Entertainment</option>
+              <option value="food">🍕 Food</option>
+              <option value="rent">🏠 Rent</option>
+              <option value="transport">🚌 Transport</option>
+              <option value="education">📚 Education</option>
+              <option value="shopping">🛒 Shopping</option>
+              <option value="health">💊 Health</option>
+              <option value="electronics">💻 Electronics</option>
+              <option value="other">📦 Other</option>
+            </select>
+          </div>
+          <div class="btn">
+            <button>Add Transaction</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart">
+        <canvas id="expenseChart"></canvas>
+      </div>
+    </div>
+    <div class="all3">
+      <div class="income">
+        <strong>Monthly Income: </strong
+        ><span id="monthly-income-display">0</span>
+      </div>
+      <div class="total">
+        <strong>Total Expenses: ₹</strong> <span id="total">0</span>
+      </div>
+      <div class="balance">
+        <strong>Balance Status: </strong>
+        <span id="balance-status" class="balance-status">Under budget</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Expense Name</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="expense-list"></tbody>
+      </table>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Retrieve expenses from local storage or initialize an empty array
+        let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+        const expenseList = document.getElementById("expense-list");
+        const addTransactionButton = document.querySelector("button");
+        const totalAmount = document.getElementById("total");
+        const monthlyIncomeInput = document.getElementById("monthly-income");
+        const balanceStatus = document.getElementById("balance-status");
+        const monthlyIncomeDisplay = document.getElementById(
+          "monthly-income-display"
+        );
+        const ctx = document.getElementById("expenseChart").getContext("2d");
+        let expenseChart;
+
+        // const today = new Date().toISOString().split('T')[0];
+        // document.getElementById("date").value = today;
+
+        // Display monthly income when input changes
+        monthlyIncomeInput.addEventListener("input", () => {
+          const incomeValue = parseFloat(monthlyIncomeInput.value).toFixed(2);
+          monthlyIncomeDisplay.textContent = incomeValue;
+          // checkBalance(); // Uncomment if you want to check balance on income input
+        });
+
+        // Add transaction when button is clicked
+        addTransactionButton.addEventListener("click", () => {
+          const monthlyIncome = parseFloat(monthlyIncomeInput.value);
+          const name = document.getElementById("expense-name").value;
+          const amount = parseFloat(document.getElementById("amount").value);
+          const category = document.getElementById("category").value;
+          const date = document.getElementById("date").value;
+
+          // Validation for input fields
+          if (!name || !amount || !date || !category || !monthlyIncome) {
+            alert("Please fill out all fields.");
+            return;
+          }
+          if (amount > monthlyIncome) {
+            alert("Amount cannot be greater than monthly income");
+            return;
+          }
+          if (
+            amount < 0 ||
+            isNaN(amount) ||
+            monthlyIncome < 0 ||
+            isNaN(monthlyIncome)
+          ) {
+            alert("Invalid amount");
+            return;
+          }
+
+          // Create an expense object
+          const expense = {
+            id: Date.now(), // Unique ID based on current timestamp
+            name,
+            amount,
+            category,
+            date,
+          };
+
+          // Add the expense to the array and store it in local storage
+          expenses.push(expense);
+          localStorage.setItem("expenses", JSON.stringify(expenses)); // Save to local storage
+          display(expenses); // Display updated expenses
+          totalValue(); // Calculate and display total expenses
+          checkBalance(monthlyIncome); // Check balance after adding expense
+          updateChart(expenses); // Update the chart with new data
+
+          // Clear input fields after adding the transaction
+          document.getElementById("expense-name").value = "";
+          document.getElementById("amount").value = "";
+          document.getElementById("category").value = "select category";
+          document.getElementById("date").value = "";
+        });
+
+        // Delete an expense when the delete button is clicked
+        expenseList.addEventListener("click", (event) => {
+          if (event.target.classList.contains("delete-button")) {
+            const id = parseInt(event.target.dataset.id);
+            expenses = expenses.filter((expense) => expense.id !== id);
+            localStorage.setItem("expenses", JSON.stringify(expenses)); // Update local storage
+            display(expenses); // Display updated expenses
+            totalValue(); // Calculate and display total expenses
+            checkBalance(parseFloat(monthlyIncomeInput.value)); // Check balance after deletion
+            updateChart(expenses); // Update the chart with new data
+          }
+        });
+
+        // Function to display expenses in the table
+        function display(expenses) {
+          expenseList.innerHTML = "";
+          expenses.forEach((expense) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${expense.name}</td>
+            <td>₹${expense.amount}</td>
+            <td>${expense.category}</td>
+            <td>${expense.date}</td>
+            <td><button class="delete-button" data-id="${expense.id}">Delete</button></td>
+          `;
+            expenseList.append(row);
+          });
+        }
+
+        // Function to calculate total expenses
+        function totalValue() {
+          let total = 0;
+          expenses.forEach((expense) => {
+            total += expense.amount;
+          });
+          totalAmount.innerHTML = total.toFixed(2);
+        }
+
+        // Function to check and display balance status
+        function checkBalance(monthlyIncome) {
+          if (!monthlyIncome || isNaN(monthlyIncome)) {
+            balanceStatus.innerHTML = "Under budget: ₹0.00"; // Default message
+            balanceStatus.classList.remove("overspent", "under-budget");
+            return;
+          }
+          let totalExpenses = 0;
+          for (let i = 0; i < expenses.length; i++) {
+            totalExpenses += expenses[i].amount; // Add each expense amount to total
+          }
+          const balance = monthlyIncome - totalExpenses;
+          if (balance >= 0) {
+            balanceStatus.innerHTML = "Under budget: ₹" + balance.toFixed(2);
+            balanceStatus.classList.remove("overspent"); // Remove overspent class
+            balanceStatus.classList.add("under-budget");
+          } else {
+            balanceStatus.innerHTML =
+              "Overspent: " + Math.abs(balance).toFixed(2);
+            balanceStatus.classList.remove("under-budget"); // Remove under budget class
+            balanceStatus.classList.add("overspent");
+          }
+        }
+
+        // Function to update the chart with expenses data
+        function updateChart(expenses) {
+          const categories = {};
+          expenses.forEach((expense) => {
+            if (!categories[expense.category]) {
+              categories[expense.category] = 0;
+            }
+            categories[expense.category] += expense.amount;
+          });
+
+          const labels = Object.keys(categories);
+          const data = Object.values(categories);
+
+          // If the chart already exists, destroy it
+          if (expenseChart) {
+            expenseChart.destroy();
+          }
+
+          // Create a new pie chart
+          expenseChart = new Chart(ctx, {
+            type: "doughnut",
+            data: {
+              labels: labels, // Labels for the segments
+              datasets: [
+                {
+                  data: data, // Data values for the segments
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(255, 159, 64, 0.2)",
+                    "rgba(255, 205, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(201, 203, 207, 0.2)",
+                  ],
+                  borderColor: [
+                    "rgb(255, 99, 132)",
+                    "rgb(255, 159, 64)",
+                    "rgb(255, 205, 86)",
+                    "rgb(75, 192, 192)",
+                    "rgb(54, 162, 235)",
+                    "rgb(153, 102, 255)",
+                    "rgb(201, 203, 207)",
+                  ],
+                  borderWidth: 2,
+                  hoverOffset: 4,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              elements: {
+                arc: {
+                  borderWidth: 2, // Increase border width to create space
+                },
+              },
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "white",
+                  },
+                  position: "bottom",
+                },
+
+                title: {
+                  display: true,
+                  text: "Expenses by Category",
+                  font: {
+                    size: 20,
+                  },
+                  color: "white",
+                },
+              },
+            },
+          });
+        }
+
+        // Initially display the expenses if any are stored in local storage
+        display(expenses);
+        totalValue();
+        checkBalance(parseFloat(monthlyIncomeInput.value));
+        updateChart(expenses);
+      });
+    </script>
+  </body>
+</html>
